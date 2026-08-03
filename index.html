@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Flolossary</title>
+<meta name="description" content="A growing Polaroid dictionary of the words she says." />
+<meta name="theme-color" content="#c17b6a" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<link rel="icon" href="icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Flolossary" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #2e2c28;
+    --mute: #8a8478;
+    --accent: #c17b6a;
+    --line: #e7e3da;
+    --paper: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #ffffff;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+  header { padding-top: 36px; padding-bottom: 18px; }
+  h1#title {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    margin: 0;
+    line-height: 1;
+    cursor: text;
+    outline: none;
+    border-bottom: 1px dashed transparent;
+  }
+  h1#title:focus { border-bottom: 1px dashed var(--accent); }
+  #subtitle { color: var(--mute); font-size: 0.86rem; margin-top: 8px; }
+  .toolbar { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+  .search-box { position: relative; flex: 1 1 160px; }
+  .search-box svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #c2beb3; }
+  #search {
+    width: 100%; padding: 10px 12px 10px 34px; background: #faf9f6;
+    border: 1px solid var(--line); border-radius: 999px; font-family: 'Inter', sans-serif;
+    font-size: 0.86rem; color: var(--ink); outline: none;
+  }
+  .btn {
+    display: flex; align-items: center; gap: 6px; padding: 10px 16px;
+    border-radius: 999px; cursor: pointer; font-family: 'Inter', sans-serif;
+    font-size: 0.84rem; font-weight: 600; white-space: nowrap; border: 1px solid var(--line);
+    background: #fff; color: var(--ink);
+  }
+  .btn-accent { background: var(--accent); color: #fff; border: none; }
+  #error-msg { color: var(--accent); font-size: 0.78rem; margin-top: 8px; }
+
+  main { padding: 14px 0 60px; }
+  #empty-state {
+    border: 1px dashed var(--line); border-radius: 8px; padding: 50px 20px;
+    text-align: center; color: var(--mute); font-size: 0.9rem;
+  }
+  #grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px;
+  }
+  .polaroid-btn { background: none; border: none; padding: 0; cursor: pointer; text-align: left; width: 100%; }
+  .polaroid {
+    background: var(--paper); border: 1px solid #efece4; border-radius: 3px;
+    padding: 10px 10px 14px; box-shadow: 0 1px 2px rgba(30,25,15,.04), 0 10px 24px -14px rgba(30,25,15,.28);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .polaroid.big { padding: 16px 16px 20px; gap: 14px; transform: none !important; }
+  .photo {
+    width: 100%; aspect-ratio: 1/1; background: #f2f1ec no-repeat center/cover;
+    border-radius: 1px; display: flex; align-items: center; justify-content: center; color: #cfccc2;
+  }
+  .caption { text-align: center; padding: 0 2px; }
+  .caption .word { font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.45rem; line-height: 1.1; }
+  .caption .meaning-preview {
+    font-size: 0.74rem; color: var(--mute); margin: 3px 0 0;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(30,28,24,.45); display: none;
+    align-items: center; justify-content: center; padding: 16px; z-index: 50;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--paper); border-radius: 8px; max-width: 400px; width: 100%;
+    max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px -20px rgba(20,15,5,.4);
+    position: relative; padding: 22px 22px 24px;
+  }
+  .modal.wide { max-width: 520px; }
+  .modal-close {
+    position: absolute; top: 10px; right: 10px; background: none; border: none;
+    cursor: pointer; color: var(--mute); padding: 6px; z-index: 1;
+  }
+  .modal h2.word-title {
+    font-family: 'Caveat', cursive; font-weight: 700; font-size: 2.1rem; text-align: center; margin: 16px 0 0;
+  }
+  .phonetic { font-size: 0.78rem; color: var(--accent); text-align: center; margin: 2px 0 0; }
+  .divider { border-top: 1px dashed var(--line); margin: 16px 0; }
+  .meaning-full { font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; }
+  .example {
+    font-style: italic; font-size: 0.86rem; color: var(--mute); margin-top: 10px;
+    padding-left: 12px; border-left: 2px solid var(--line);
+  }
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .modal-actions .btn { flex: 1; justify-content: center; border-radius: 6px; }
+  .btn-delete { border: 1px solid var(--accent); color: var(--accent); background: #fff; }
+  .btn-delete.confirm { background: var(--accent); color: #fff; }
+
+  label.field-label {
+    font-size: 0.72rem; font-weight: 600; color: var(--mute); display: block; margin-bottom: 5px;
+  }
+  .field { margin-bottom: 12px; }
+  input[type=text], textarea {
+    width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px 11px; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--ink); outline: none;
+  }
+  textarea { min-height: 70px; resize: vertical; }
+  #photo-drop {
+    width: 100%; max-width: 220px; margin: 0 auto; aspect-ratio: 1/1; border-radius: 3px;
+    border: 1px solid var(--line); background: #faf9f6; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; color: var(--mute); flex-direction: column; gap: 6px;
+    font-size: 0.76rem; background-size: cover; background-position: center;
+  }
+  #save-btn {
+    margin-top: 6px; width: 100%; padding: 12px 0; background: var(--accent); color: #fff;
+    border: none; border-radius: 6px; cursor: pointer; font-size: 0.88rem; font-weight: 600;
+  }
+  #save-btn:disabled { background: var(--line); cursor: not-allowed; }
+
+  /* quiz */
+  .quiz-center { text-align: center; }
+  .quiz-h { font-family: 'Caveat', cursive; font-weight: 700; font-size: 2rem; margin: 8px 0 0; }
+  .quiz-sub { font-size: 0.88rem; color: var(--mute); margin-top: 10px; }
+  .length-pills { display: flex; justify-content: center; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+  .pill {
+    padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: #fff;
+    color: var(--ink); font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  }
+  .pill.active { border-color: var(--accent); background: var(--accent); color: #fff; }
+  #quiz-start {
+    margin-top: 22px; padding: 12px 28px; background: var(--accent); color: #fff; border: none;
+    border-radius: 999px; cursor: pointer; font-size: 0.9rem; font-weight: 600;
+  }
+  .q-progress { font-size: 0.72rem; color: var(--mute); text-align: center; margin: 0 0 14px; font-weight: 600; letter-spacing: .03em; }
+  .q-photo-wrap { max-width: 200px; margin: 0 auto; }
+  .q-word { font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.9rem; text-align: center; margin: 14px 0 18px; }
+  .options { display: flex; flex-direction: column; gap: 9px; }
+  .option {
+    text-align: left; padding: 12px 14px; border-radius: 8px; border: 1.5px solid var(--line);
+    background: #fff; color: var(--ink); cursor: pointer; font-size: 0.87rem; display: flex;
+    justify-content: space-between; align-items: center; gap: 10px;
+  }
+  .option.correct { background: #eef6ee; border-color: #7fa87f; color: #3f6b3f; }
+  .option.wrong { background: #faeceb; border-color: var(--accent); color: #8a3b2f; }
+  #next-q {
+    margin-top: 18px; width: 100%; padding: 11px 0; background: var(--ink); color: #fff; border: none;
+    border-radius: 999px; cursor: pointer; font-size: 0.86rem; font-weight: 600; display: flex;
+    align-items: center; justify-content: center; gap: 6px;
+  }
+  .score-h { font-family: 'Caveat', cursive; font-weight: 700; font-size: 2.1rem; margin: 0; }
+  .missed-block { text-align: left; margin-top: 20px; border-top: 1px dashed var(--line); padding-top: 14px; }
+  .missed-label { font-size: 0.74rem; font-weight: 600; color: var(--mute); margin-bottom: 8px; }
+  .missed-word { font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.15rem; }
+  .missed-meaning { font-size: 0.82rem; color: var(--mute); margin: 1px 0 0; }
+  .done-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
+
+  .spin { animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading { display: flex; justify-content: center; padding: 60px 0; color: #c2beb3; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1 id="title" contenteditable="true" spellcheck="false" title="Click to rename">Flolossary</h1>
+    <p id="subtitle">0 words collected, one Polaroid at a time.</p>
+
+    <div class="toolbar">
+      <div class="search-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="search" type="text" placeholder="Search her words…" />
+      </div>
+      <button class="btn" id="quiz-btn">✨ Quiz me</button>
+      <button class="btn btn-accent" id="add-btn">+ Add word</button>
+    </div>
+    <p id="error-msg" style="display:none;"></p>
+  </header>
+
+  <main>
+    <div id="loading"><span class="spin">◐</span></div>
+    <div id="empty-state" style="display:none;"></div>
+    <div id="grid" style="display:none;"></div>
+  </main>
+</div>
+
+<!-- Detail modal -->
+<div class="modal-overlay" id="detail-overlay">
+  <div class="modal" id="detail-modal">
+    <button class="modal-close" data-close>✕</button>
+    <div id="detail-body"></div>
+  </div>
+</div>
+
+<!-- Form modal -->
+<div class="modal-overlay" id="form-overlay">
+  <div class="modal" id="form-modal">
+    <button class="modal-close" data-close>✕</button>
+    <h3 class="quiz-h" id="form-title" style="text-align:left;font-size:1.6rem;">Add a new word</h3>
+    <div style="margin-top:16px;">
+      <div class="field">
+        <label class="field-label">Photo</label>
+        <div id="photo-drop">📷 Add a photo</div>
+        <input type="file" id="photo-input" accept="image/*" style="display:none;" />
+      </div>
+      <div class="field">
+        <label class="field-label">Word or phrase</label>
+        <input type="text" id="f-word" placeholder="e.g. hangry-nap" />
+      </div>
+      <div class="field">
+        <label class="field-label">How she says it (optional)</label>
+        <input type="text" id="f-phonetic" placeholder="e.g. HANG-gree nap" />
+      </div>
+      <div class="field">
+        <label class="field-label">What it really means</label>
+        <textarea id="f-meaning" placeholder="Define it the way she'd define it"></textarea>
+      </div>
+      <div class="field">
+        <label class="field-label">Used in a sentence (optional)</label>
+        <input type="text" id="f-example" placeholder="e.g. I need a hangry-nap immediately." />
+      </div>
+    </div>
+    <button id="save-btn" disabled>Add to the collection</button>
+  </div>
+</div>
+
+<!-- Quiz modal -->
+<div class="modal-overlay" id="quiz-overlay">
+  <div class="modal wide" id="quiz-modal">
+    <button class="modal-close" data-close>✕</button>
+    <div id="quiz-body"></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, doc, onSnapshot, setDoc, addDoc, updateDoc,
+  deleteDoc, serverTimestamp, query, orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ====================================================================
+   1) REPLACE THIS with your own Firebase project config.
+      Firebase console → Project settings → General → "Your apps" → SDK setup.
+   ==================================================================== */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const entriesCol = collection(db, "entries");
+const metaDoc = doc(db, "meta", "title");
+
+/* ---------------- state ---------------- */
+let entries = [];
+let query_ = "";
+let activeEntry = null;
+let editingEntry = null;
+let photoData = null;
+
+/* ---------------- helpers ---------------- */
+function uidTilt(id) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 1000;
+  return (h % 700) / 100 - 3.5;
+}
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function compressImage(file, maxW = 700, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+function esc(s) {
+  const d = document.createElement("div");
+  d.textContent = s ?? "";
+  return d.innerHTML;
+}
+
+/* ---------------- Firestore sync ---------------- */
+const loadingEl = document.getElementById("loading");
+const emptyEl = document.getElementById("empty-state");
+const gridEl = document.getElementById("grid");
+const errorEl = document.getElementById("error-msg");
+const subtitleEl = document.getElementById("subtitle");
+const titleEl = document.getElementById("title");
+
+function showError(msg) {
+  errorEl.style.display = "block";
+  errorEl.textContent = msg;
+}
+
+try {
+  const q = query(entriesCol, orderBy("createdAt", "asc"));
+  onSnapshot(
+    q,
+    (snap) => {
+      entries = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      loadingEl.style.display = "none";
+      render();
+    },
+    (err) => {
+      loadingEl.style.display = "none";
+      showError("Couldn't connect to Firebase — check your config and Firestore rules.");
+      console.error(err);
+    }
+  );
+} catch (err) {
+  loadingEl.style.display = "none";
+  showError("Firebase isn't configured yet — edit firebaseConfig in index.html.");
+  console.error(err);
+}
+
+onSnapshot(metaDoc, (snap) => {
+  if (snap.exists() && snap.data().title) {
+    titleEl.textContent = snap.data().title;
+  }
+}, () => {});
+
+titleEl.addEventListener("blur", async () => {
+  const t = titleEl.textContent.trim() || "Flolossary";
+  titleEl.textContent = t;
+  try {
+    await setDoc(metaDoc, { title: t });
+  } catch (err) {
+    showError("Couldn't save the title.");
+  }
+});
+titleEl.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); titleEl.blur(); }
+});
+
+/* ---------------- render grid ---------------- */
+function render() {
+  const q = query_.toLowerCase();
+  const filtered = entries.filter(
+    (e) => e.word.toLowerCase().includes(q) || e.meaning.toLowerCase().includes(q)
+  );
+  subtitleEl.textContent = `${entries.length} ${entries.length === 1 ? "word" : "words"} collected, one Polaroid at a time.`;
+
+  if (filtered.length === 0) {
+    gridEl.style.display = "none";
+    emptyEl.style.display = "block";
+    emptyEl.textContent = entries.length === 0
+      ? "No words yet — add the first one she's made her own."
+      : "Nothing matches that search.";
+    return;
+  }
+  emptyEl.style.display = "none";
+  gridEl.style.display = "grid";
+  gridEl.innerHTML = filtered.map(cardHTML).join("");
+  filtered.forEach((entry) => {
+    document.getElementById("card-" + entry.id).addEventListener("click", () => openDetail(entry));
+  });
+}
+
+function cardHTML(entry) {
+  const tilt = uidTilt(entry.id);
+  const photoStyle = entry.image ? `background-image:url(${entry.image})` : "";
+  return `
+    <button class="polaroid-btn" id="card-${entry.id}">
+      <div class="polaroid" style="transform:rotate(${tilt}deg)">
+        <div class="photo" style="${photoStyle}">${entry.image ? "" : "📷"}</div>
+        <div class="caption">
+          <div class="word">${esc(entry.word)}</div>
+          <p class="meaning-preview">${esc(entry.meaning)}</p>
+        </div>
+      </div>
+    </button>`;
+}
+
+/* ---------------- detail modal ---------------- */
+const detailOverlay = document.getElementById("detail-overlay");
+const detailBody = document.getElementById("detail-body");
+
+function openDetail(entry) {
+  activeEntry = entry;
+  let confirmDelete = false;
+  renderDetail();
+  detailOverlay.classList.add("open");
+
+  function renderDetail() {
+    detailBody.innerHTML = `
+      <div class="polaroid big">
+        <div class="photo" style="${entry.image ? `background-image:url(${entry.image})` : ""}">${entry.image ? "" : "📷"}</div>
+      </div>
+      <h2 class="word-title">${esc(entry.word)}</h2>
+      ${entry.phonetic ? `<p class="phonetic">${esc(entry.phonetic)}</p>` : ""}
+      <div class="divider"></div>
+      <p class="meaning-full">${esc(entry.meaning)}</p>
+      ${entry.example ? `<p class="example">"${esc(entry.example)}"</p>` : ""}
+      <div class="modal-actions">
+        <button class="btn" id="edit-btn" style="justify-content:center;border-radius:6px;">✏️ Edit</button>
+        <button class="btn btn-delete ${confirmDelete ? "confirm" : ""}" id="del-btn">🗑 ${confirmDelete ? "Confirm delete" : "Delete"}</button>
+      </div>`;
+    document.getElementById("edit-btn").addEventListener("click", () => {
+      detailOverlay.classList.remove("open");
+      openForm(entry);
+    });
+    document.getElementById("del-btn").addEventListener("click", async () => {
+      if (!confirmDelete) { confirmDelete = true; renderDetail(); return; }
+      try {
+        await deleteDoc(doc(db, "entries", entry.id));
+        detailOverlay.classList.remove("open");
+      } catch (err) {
+        showError("Couldn't delete that word.");
+      }
+    });
+  }
+}
+
+/* ---------------- form modal ---------------- */
+const formOverlay = document.getElementById("form-overlay");
+const formTitle = document.getElementById("form-title");
+const fWord = document.getElementById("f-word");
+const fPhonetic = document.getElementById("f-phonetic");
+const fMeaning = document.getElementById("f-meaning");
+const fExample = document.getElementById("f-example");
+const photoDrop = document.getElementById("photo-drop");
+const photoInput = document.getElementById("photo-input");
+const saveBtn = document.getElementById("save-btn");
+
+function openForm(entry) {
+  editingEntry = entry || null;
+  photoData = entry?.image || null;
+  formTitle.textContent = entry ? "Edit word" : "Add a new word";
+  fWord.value = entry?.word || "";
+  fPhonetic.value = entry?.phonetic || "";
+  fMeaning.value = entry?.meaning || "";
+  fExample.value = entry?.example || "";
+  updatePhotoDrop();
+  saveBtn.textContent = entry ? "Save changes" : "Add to the collection";
+  validateForm();
+  formOverlay.classList.add("open");
+}
+function updatePhotoDrop() {
+  if (photoData) {
+    photoDrop.style.backgroundImage = `url(${photoData})`;
+    photoDrop.textContent = "";
+  } else {
+    photoDrop.style.backgroundImage = "";
+    photoDrop.textContent = "📷 Add a photo";
+  }
+}
+photoDrop.addEventListener("click", () => photoInput.click());
+photoInput.addEventListener("change", async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  photoDrop.textContent = "…";
+  try {
+    photoData = await compressImage(file);
+    updatePhotoDrop();
+  } catch {
+    showError("Couldn't read that photo.");
+  }
+});
+[fWord, fMeaning].forEach((el) => el.addEventListener("input", validateForm));
+function validateForm() {
+  saveBtn.disabled = !(fWord.value.trim() && fMeaning.value.trim());
+}
+
+document.getElementById("add-btn").addEventListener("click", () => openForm(null));
+
+saveBtn.addEventListener("click", async () => {
+  const payload = {
+    word: fWord.value.trim(),
+    phonetic: fPhonetic.value.trim(),
+    meaning: fMeaning.value.trim(),
+    example: fExample.value.trim(),
+    image: photoData || null,
+  };
+  try {
+    if (editingEntry) {
+      await updateDoc(doc(db, "entries", editingEntry.id), payload);
+    } else {
+      await addDoc(entriesCol, { ...payload, createdAt: serverTimestamp() });
+    }
+    formOverlay.classList.remove("open");
+  } catch (err) {
+    showError("Couldn't save — check your Firestore rules/config.");
+    console.error(err);
+  }
+});
+
+/* ---------------- search ---------------- */
+document.getElementById("search").addEventListener("input", (e) => {
+  query_ = e.target.value;
+  render();
+});
+
+/* ---------------- close modals ---------------- */
+document.querySelectorAll("[data-close]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    btn.closest(".modal-overlay").classList.remove("open");
+  });
+});
+document.querySelectorAll(".modal-overlay").forEach((ov) => {
+  ov.addEventListener("click", (e) => {
+    if (e.target === ov) ov.classList.remove("open");
+  });
+});
+
+/* ---------------- quiz ---------------- */
+const quizOverlay = document.getElementById("quiz-overlay");
+const quizBody = document.getElementById("quiz-body");
+document.getElementById("quiz-btn").addEventListener("click", () => {
+  quizOverlay.classList.add("open");
+  renderQuizIntro();
+});
+
+function buildQuiz(len) {
+  const pool = shuffle(entries).slice(0, len);
+  return pool.map((entry) => {
+    const others = shuffle(entries.filter((e) => e.id !== entry.id)).slice(0, 3);
+    const options = shuffle([entry, ...others]);
+    return { entry, options };
+  });
+}
+
+function renderQuizIntro() {
+  const canQuiz = entries.length >= 2;
+  let length = Math.min(10, entries.length);
+  const lengths = [5, 10, entries.length].filter((n, i, arr) => n > 0 && n <= entries.length && arr.indexOf(n) === i);
+
+  quizBody.innerHTML = `
+    <div class="quiz-center">
+      <div style="font-size:26px;">✨</div>
+      <h2 class="quiz-h">Do you really know her words?</h2>
+      ${!canQuiz
+        ? `<p class="quiz-sub">Add at least 2 words to the collection before you can take a quiz.</p>`
+        : `<p class="quiz-sub">You'll see a word — pick what it actually means.</p>
+           <div class="length-pills">${lengths.map((n) => `<button class="pill ${n === length ? "active" : ""}" data-len="${n}">${n} words</button>`).join("")}</div>
+           <button id="quiz-start">Start quiz</button>`
+      }
+    </div>`;
+  if (!canQuiz) return;
+
+  quizBody.querySelectorAll(".pill").forEach((p) => {
+    p.addEventListener("click", () => {
+      length = parseInt(p.dataset.len, 10);
+      quizBody.querySelectorAll(".pill").forEach((x) => x.classList.remove("active"));
+      p.classList.add("active");
+    });
+  });
+  document.getElementById("quiz-start").addEventListener("click", () => runQuiz(length));
+}
+
+function runQuiz(length) {
+  const questions = buildQuiz(length);
+  let qIndex = 0, score = 0, selected = null;
+  const missed = [];
+
+  function renderQuestion() {
+    const q = questions[qIndex];
+    const tilt = 0;
+    quizBody.innerHTML = `
+      <p class="q-progress">QUESTION ${qIndex + 1} OF ${questions.length}</p>
+      <div class="q-photo-wrap">
+        <div class="polaroid big">
+          <div class="photo" style="${q.entry.image ? `background-image:url(${q.entry.image})` : ""}">${q.entry.image ? "" : "📷"}</div>
+        </div>
+      </div>
+      <h3 class="q-word">${esc(q.entry.word)}</h3>
+      <div class="options">
+        ${q.options.map((opt) => `<button class="option" data-id="${opt.id}">${esc(opt.meaning)}</button>`).join("")}
+      </div>
+      <button id="next-q" style="display:none;">Next word →</button>`;
+
+    quizBody.querySelectorAll(".option").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (selected) return;
+        selected = btn.dataset.id;
+        const isCorrect = selected === q.entry.id;
+        if (isCorrect) score++; else missed.push(q.entry);
+        quizBody.querySelectorAll(".option").forEach((b) => {
+          if (b.dataset.id === q.entry.id) b.classList.add("correct");
+          else if (b.dataset.id === selected) b.classList.add("wrong");
+        });
+        const nextBtn = document.getElementById("next-q");
+        nextBtn.style.display = "flex";
+        nextBtn.textContent = qIndex + 1 >= questions.length ? "See results →" : "Next word →";
+        nextBtn.onclick = () => {
+          qIndex++;
+          selected = null;
+          if (qIndex >= questions.length) renderResults();
+          else renderQuestion();
+        };
+      });
+    });
+  }
+
+  function renderResults() {
+    const pct = score / questions.length;
+    const msg = pct === 1 ? "Fluent. You speak her language."
+      : pct >= 0.7 ? "Pretty solid — a few words still slipping past you."
+      : "Time for a re-read of the collection.";
+    quizBody.innerHTML = `
+      <div class="quiz-center">
+        <h2 class="score-h">${score} / ${questions.length}</h2>
+        <p class="quiz-sub">${msg}</p>
+        ${missed.length > 0 ? `
+          <div class="missed-block">
+            <p class="missed-label">WORDS TO REVIEW</p>
+            ${missed.map((m) => `<div style="margin-bottom:10px;"><span class="missed-word">${esc(m.word)}</span><p class="missed-meaning">${esc(m.meaning)}</p></div>`).join("")}
+          </div>` : ""}
+        <div class="done-actions">
+          <button class="btn" id="retry-btn">↺ Try again</button>
+          <button class="btn btn-accent" id="done-btn">Done</button>
+        </div>
+      </div>`;
+    document.getElementById("retry-btn").addEventListener("click", renderQuizIntro);
+    document.getElementById("done-btn").addEventListener("click", () => quizOverlay.classList.remove("open"));
+  }
+
+  renderQuestion();
+}
+</script>
+</body>
+</html>
