@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Flolossary</title>
-<meta name="description" content="A growing Polaroid dictionary of the words she says." />
+<meta name="description" content="A growing Polaroid dictionary of the words Flolosii says." />
 <meta name="theme-color" content="#c17b6a" />
 <link rel="manifest" href="manifest.json" />
 <link rel="apple-touch-icon" href="icon-192.png" />
@@ -191,7 +191,7 @@
     <div class="toolbar">
       <div class="search-box">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input id="search" type="text" placeholder="Search her words…" />
+        <input id="search" type="text" placeholder="Search Flolosii's words…" />
       </div>
       <button class="btn" id="quiz-btn">✨ Quiz me</button>
       <button class="btn btn-accent" id="add-btn">+ Add word</button>
@@ -230,12 +230,12 @@
         <input type="text" id="f-word" placeholder="e.g. hangry-nap" />
       </div>
       <div class="field">
-        <label class="field-label">How she says it (optional)</label>
+        <label class="field-label">How Flolosii says it (optional)</label>
         <input type="text" id="f-phonetic" placeholder="e.g. HANG-gree nap" />
       </div>
       <div class="field">
         <label class="field-label">What it really means</label>
-        <textarea id="f-meaning" placeholder="Define it the way she'd define it"></textarea>
+        <textarea id="f-meaning" placeholder="Define it the way Flolosii would define it"></textarea>
       </div>
       <div class="field">
         <label class="field-label">Used in a sentence (optional)</label>
@@ -393,7 +393,7 @@ function render() {
     gridEl.style.display = "none";
     emptyEl.style.display = "block";
     emptyEl.textContent = entries.length === 0
-      ? "No words yet — add the first one she's made her own."
+      ? "No words yet — add the first word Flolosii has made her own."
       : "Nothing matches that search.";
     return;
   }
@@ -576,7 +576,7 @@ function renderQuizIntro() {
   quizBody.innerHTML = `
     <div class="quiz-center">
       <div style="font-size:26px;">✨</div>
-      <h2 class="quiz-h">Do you really know her words?</h2>
+      <h2 class="quiz-h">Do you really know Flolosii's words?</h2>
       ${!canQuiz
         ? `<p class="quiz-sub">Add at least 2 words to the collection before you can take a quiz.</p>`
         : `<p class="quiz-sub">You'll see a word — pick what it actually means.</p>
@@ -642,7 +642,7 @@ function runQuiz(length) {
 
   function renderResults() {
     const pct = score / questions.length;
-    const msg = pct === 1 ? "Fluent. You speak her language."
+    const msg = pct === 1 ? "Fluent. You speak Flolosii's language."
       : pct >= 0.7 ? "Pretty solid — a few words still slipping past you."
       : "Time for a re-read of the collection.";
     quizBody.innerHTML = `
