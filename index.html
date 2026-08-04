@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Flolossary</title>
 <meta name="description" content="A growing Polaroid dictionary of the words Flolosii says." />
-<meta name="theme-color" content="#c17b6a" />
+<meta name="theme-color" content="#f2a6bf" />
 <link rel="manifest" href="manifest.json" />
 <link rel="apple-touch-icon" href="icon-192.png" />
 <link rel="icon" href="icon-192.png" />
@@ -13,171 +13,210 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Flolossary" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --ink: #2e2c28;
-    --mute: #8a8478;
-    --accent: #c17b6a;
-    --line: #e7e3da;
+    --ink: #6b5560;
+    --mute: #b09aa5;
+    --blush: #ffd6e3;
+    --blush-deep: #f2a6bf;
+    --blush-text: #d6688f;
+    --lav: #e8def7;
+    --gold: #f0cf8a;
+    --mint: #cdeedd;
+    --mint-text: #3f8f6b;
+    --line: #f3dde6;
     --paper: #ffffff;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background: #ffffff;
-    font-family: 'Inter', sans-serif;
+    background:
+      repeating-linear-gradient(115deg, rgba(242,166,191,0.05) 0 2px, transparent 2px 34px),
+      repeating-linear-gradient(25deg, rgba(232,222,247,0.05) 0 2px, transparent 2px 34px),
+      #ffffff;
+    font-family: 'Quicksand', sans-serif;
     color: var(--ink);
     -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; }
-  header { padding-top: 36px; padding-bottom: 18px; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 20px; position: relative; }
+  header { padding-top: 40px; padding-bottom: 18px; position: relative; }
+  .sparkle {
+    position: absolute; pointer-events: none; opacity: 0.55;
+    animation: float 5s ease-in-out infinite;
+  }
+  .sparkle:nth-child(1) { top: -6px; right: 46px; animation-delay: 0s; }
+  .sparkle:nth-child(2) { top: 30px; right: 8px; animation-delay: 1.4s; }
+  .sparkle:nth-child(3) { top: 58px; right: 78px; animation-delay: 2.6s; }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(8deg); }
+  }
+  .title-row { display: flex; align-items: center; gap: 10px; }
   h1#title {
-    font-family: 'Caveat', cursive;
+    font-family: 'Baloo 2', cursive;
     font-weight: 700;
-    font-size: clamp(2rem, 6vw, 2.8rem);
+    font-size: clamp(2rem, 6vw, 2.7rem);
     margin: 0;
-    line-height: 1;
+    line-height: 1.1;
     cursor: text;
     outline: none;
-    border-bottom: 1px dashed transparent;
+    border-bottom: 2px dashed transparent;
+    color: var(--ink);
   }
-  h1#title:focus { border-bottom: 1px dashed var(--accent); }
-  #subtitle { color: var(--mute); font-size: 0.86rem; margin-top: 8px; }
-  .toolbar { display: flex; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+  h1#title:focus { border-bottom: 2px dashed var(--blush-deep); }
+  #subtitle { color: var(--mute); font-size: 0.88rem; margin-top: 8px; font-weight: 500; }
+  .toolbar { display: flex; gap: 8px; margin-top: 22px; flex-wrap: wrap; }
   .search-box { position: relative; flex: 1 1 160px; }
-  .search-box svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #c2beb3; }
+  .search-box svg { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--blush-deep); }
   #search {
-    width: 100%; padding: 10px 12px 10px 34px; background: #faf9f6;
-    border: 1px solid var(--line); border-radius: 999px; font-family: 'Inter', sans-serif;
-    font-size: 0.86rem; color: var(--ink); outline: none;
+    width: 100%; padding: 11px 12px 11px 36px; background: #fff8fa;
+    border: 1.5px solid var(--line); border-radius: 999px; font-family: 'Quicksand', sans-serif;
+    font-size: 0.88rem; font-weight: 500; color: var(--ink); outline: none;
   }
+  #search:focus { border-color: var(--blush-deep); }
   .btn {
-    display: flex; align-items: center; gap: 6px; padding: 10px 16px;
-    border-radius: 999px; cursor: pointer; font-family: 'Inter', sans-serif;
-    font-size: 0.84rem; font-weight: 600; white-space: nowrap; border: 1px solid var(--line);
-    background: #fff; color: var(--ink);
+    display: flex; align-items: center; gap: 6px; padding: 10px 18px;
+    border-radius: 999px; cursor: pointer; font-family: 'Quicksand', sans-serif;
+    font-size: 0.86rem; font-weight: 700; white-space: nowrap; border: 1.5px solid var(--line);
+    background: #fff; color: var(--ink); transition: transform .12s ease, box-shadow .12s ease;
   }
-  .btn-accent { background: var(--accent); color: #fff; border: none; }
-  #error-msg { color: var(--accent); font-size: 0.78rem; margin-top: 8px; }
+  .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 14px -8px rgba(242,166,191,0.6); }
+  .btn-accent { background: var(--blush-deep); color: #fff; border: none; }
+  .btn-accent:hover { box-shadow: 0 8px 18px -8px rgba(214,104,143,0.55); }
+  #error-msg { color: var(--blush-text); font-size: 0.78rem; margin-top: 8px; font-weight: 600; }
 
-  main { padding: 14px 0 60px; }
+  main { padding: 16px 0 60px; }
   #empty-state {
-    border: 1px dashed var(--line); border-radius: 8px; padding: 50px 20px;
-    text-align: center; color: var(--mute); font-size: 0.9rem;
+    border: 2px dashed var(--line); border-radius: 22px; padding: 50px 20px;
+    text-align: center; color: var(--mute); font-size: 0.92rem; font-weight: 500;
+    background: #fffafc;
   }
   #grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 26px 22px;
   }
   .polaroid-btn { background: none; border: none; padding: 0; cursor: pointer; text-align: left; width: 100%; }
   .polaroid {
-    background: var(--paper); border: 1px solid #efece4; border-radius: 3px;
-    padding: 10px 10px 14px; box-shadow: 0 1px 2px rgba(30,25,15,.04), 0 10px 24px -14px rgba(30,25,15,.28);
-    display: flex; flex-direction: column; gap: 8px;
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: 20px;
+    padding: 10px 10px 14px; box-shadow: 0 2px 0 rgba(242,166,191,0.12), 0 14px 24px -16px rgba(214,104,143,0.45);
+    display: flex; flex-direction: column; gap: 8px; position: relative;
+    transition: transform .15s ease, box-shadow .15s ease;
   }
-  .polaroid.big { padding: 16px 16px 20px; gap: 14px; transform: none !important; }
+  .polaroid-btn:hover .polaroid { transform: translateY(-3px); box-shadow: 0 2px 0 rgba(242,166,191,0.16), 0 18px 30px -16px rgba(214,104,143,0.55); }
+  .polaroid.big { padding: 18px 18px 22px; gap: 14px; transform: none !important; }
+  .bow {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%) rotate(var(--bow-tilt, 0deg));
+    width: 34px; height: 22px; z-index: 2; filter: drop-shadow(0 2px 3px rgba(214,104,143,0.25));
+  }
+  .polaroid.big .bow { width: 44px; height: 28px; top: -16px; }
   .photo {
-    width: 100%; aspect-ratio: 1/1; background: #f2f1ec no-repeat center/cover;
-    border-radius: 1px; display: flex; align-items: center; justify-content: center; color: #cfccc2;
+    width: 100%; aspect-ratio: 1/1; background: linear-gradient(160deg, #fff5f8, #fdeef3) no-repeat center/cover;
+    border-radius: 14px; display: flex; align-items: center; justify-content: center; color: var(--blush-deep);
   }
   .caption { text-align: center; padding: 0 2px; }
-  .caption .word { font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.45rem; line-height: 1.1; }
+  .caption .word { font-family: 'Baloo 2', cursive; font-weight: 700; font-size: 1.3rem; line-height: 1.15; color: var(--ink); }
   .caption .meaning-preview {
-    font-size: 0.74rem; color: var(--mute); margin: 3px 0 0;
+    font-size: 0.76rem; color: var(--mute); margin: 3px 0 0; font-weight: 500;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
 
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(30,28,24,.45); display: none;
+    position: fixed; inset: 0; background: rgba(107,85,96,.35); display: none;
     align-items: center; justify-content: center; padding: 16px; z-index: 50;
+    backdrop-filter: blur(2px);
   }
   .modal-overlay.open { display: flex; }
   .modal {
-    background: var(--paper); border-radius: 8px; max-width: 400px; width: 100%;
-    max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px -20px rgba(20,15,5,.4);
-    position: relative; padding: 22px 22px 24px;
+    background: #fffdfd; border-radius: 26px; max-width: 400px; width: 100%;
+    max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px -20px rgba(214,104,143,.35);
+    position: relative; padding: 26px 22px 26px; border: 1.5px solid var(--line);
   }
   .modal.wide { max-width: 520px; }
   .modal-close {
-    position: absolute; top: 10px; right: 10px; background: none; border: none;
-    cursor: pointer; color: var(--mute); padding: 6px; z-index: 1;
+    position: absolute; top: 12px; right: 12px; background: var(--paper); border: 1.5px solid var(--line);
+    cursor: pointer; color: var(--mute); padding: 6px; z-index: 1; border-radius: 999px;
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
   }
   .modal h2.word-title {
-    font-family: 'Caveat', cursive; font-weight: 700; font-size: 2.1rem; text-align: center; margin: 16px 0 0;
+    font-family: 'Baloo 2', cursive; font-weight: 700; font-size: 2rem; text-align: center; margin: 18px 0 0; color: var(--ink);
   }
-  .phonetic { font-size: 0.78rem; color: var(--accent); text-align: center; margin: 2px 0 0; }
-  .divider { border-top: 1px dashed var(--line); margin: 16px 0; }
-  .meaning-full { font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; }
+  .phonetic { font-size: 0.8rem; color: var(--blush-text); text-align: center; margin: 3px 0 0; font-weight: 600; }
+  .divider { border-top: 2px dashed var(--line); margin: 16px 0; }
+  .meaning-full { font-size: 0.96rem; line-height: 1.65; white-space: pre-wrap; font-weight: 500; }
   .example {
-    font-style: italic; font-size: 0.86rem; color: var(--mute); margin-top: 10px;
-    padding-left: 12px; border-left: 2px solid var(--line);
+    font-style: italic; font-size: 0.87rem; color: var(--mute); margin-top: 10px; font-weight: 500;
+    padding-left: 12px; border-left: 3px solid var(--blush);
   }
-  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-  .modal-actions .btn { flex: 1; justify-content: center; border-radius: 6px; }
-  .btn-delete { border: 1px solid var(--accent); color: var(--accent); background: #fff; }
-  .btn-delete.confirm { background: var(--accent); color: #fff; }
+  .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
+  .modal-actions .btn { flex: 1; justify-content: center; border-radius: 999px; }
+  .btn-delete { border: 1.5px solid var(--blush-deep); color: var(--blush-text); background: #fff; }
+  .btn-delete.confirm { background: var(--blush-deep); color: #fff; }
 
   label.field-label {
-    font-size: 0.72rem; font-weight: 600; color: var(--mute); display: block; margin-bottom: 5px;
+    font-size: 0.74rem; font-weight: 700; color: var(--blush-text); display: block; margin-bottom: 6px;
   }
-  .field { margin-bottom: 12px; }
+  .field { margin-bottom: 14px; }
   input[type=text], textarea {
-    width: 100%; background: #fff; border: 1px solid var(--line); border-radius: 6px;
-    padding: 10px 11px; font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--ink); outline: none;
+    width: 100%; background: #fff8fa; border: 1.5px solid var(--line); border-radius: 14px;
+    padding: 11px 12px; font-family: 'Quicksand', sans-serif; font-size: 0.92rem; font-weight: 500;
+    color: var(--ink); outline: none;
   }
+  input[type=text]:focus, textarea:focus { border-color: var(--blush-deep); }
   textarea { min-height: 70px; resize: vertical; }
   #photo-drop {
-    width: 100%; max-width: 220px; margin: 0 auto; aspect-ratio: 1/1; border-radius: 3px;
-    border: 1px solid var(--line); background: #faf9f6; display: flex; align-items: center;
-    justify-content: center; cursor: pointer; color: var(--mute); flex-direction: column; gap: 6px;
-    font-size: 0.76rem; background-size: cover; background-position: center;
+    width: 100%; max-width: 220px; margin: 0 auto; aspect-ratio: 1/1; border-radius: 22px;
+    border: 2px dashed var(--line); background: #fff8fa; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; color: var(--blush-deep); flex-direction: column; gap: 6px;
+    font-size: 0.78rem; font-weight: 600; background-size: cover; background-position: center;
   }
+  #photo-drop span { font-family: 'Quicksand', sans-serif; }
   #save-btn {
-    margin-top: 6px; width: 100%; padding: 12px 0; background: var(--accent); color: #fff;
-    border: none; border-radius: 6px; cursor: pointer; font-size: 0.88rem; font-weight: 600;
+    margin-top: 8px; width: 100%; padding: 13px 0; background: var(--blush-deep); color: #fff;
+    border: none; border-radius: 999px; cursor: pointer; font-size: 0.9rem; font-weight: 700;
+    font-family: 'Quicksand', sans-serif;
   }
-  #save-btn:disabled { background: var(--line); cursor: not-allowed; }
+  #save-btn:disabled { background: var(--line); color: var(--mute); cursor: not-allowed; }
 
   /* quiz */
   .quiz-center { text-align: center; }
-  .quiz-h { font-family: 'Caveat', cursive; font-weight: 700; font-size: 2rem; margin: 8px 0 0; }
-  .quiz-sub { font-size: 0.88rem; color: var(--mute); margin-top: 10px; }
+  .quiz-h { font-family: 'Baloo 2', cursive; font-weight: 700; font-size: 1.9rem; margin: 8px 0 0; color: var(--ink); }
+  .quiz-sub { font-size: 0.9rem; color: var(--mute); margin-top: 10px; font-weight: 500; }
   .length-pills { display: flex; justify-content: center; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
   .pill {
-    padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: #fff;
-    color: var(--ink); font-size: 0.82rem; font-weight: 600; cursor: pointer;
+    padding: 8px 18px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff;
+    color: var(--ink); font-size: 0.84rem; font-weight: 700; cursor: pointer; font-family: 'Quicksand', sans-serif;
   }
-  .pill.active { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .pill.active { border-color: var(--blush-deep); background: var(--blush-deep); color: #fff; }
   #quiz-start {
-    margin-top: 22px; padding: 12px 28px; background: var(--accent); color: #fff; border: none;
-    border-radius: 999px; cursor: pointer; font-size: 0.9rem; font-weight: 600;
+    margin-top: 22px; padding: 13px 30px; background: var(--blush-deep); color: #fff; border: none;
+    border-radius: 999px; cursor: pointer; font-size: 0.92rem; font-weight: 700; font-family: 'Quicksand', sans-serif;
   }
-  .q-progress { font-size: 0.72rem; color: var(--mute); text-align: center; margin: 0 0 14px; font-weight: 600; letter-spacing: .03em; }
+  .q-progress { font-size: 0.74rem; color: var(--blush-text); text-align: center; margin: 0 0 14px; font-weight: 700; letter-spacing: .03em; }
   .q-photo-wrap { max-width: 200px; margin: 0 auto; }
-  .q-word { font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.9rem; text-align: center; margin: 14px 0 18px; }
+  .q-word { font-family: 'Baloo 2', cursive; font-weight: 700; font-size: 1.75rem; text-align: center; margin: 16px 0 18px; color: var(--ink); }
   .options { display: flex; flex-direction: column; gap: 9px; }
   .option {
-    text-align: left; padding: 12px 14px; border-radius: 8px; border: 1.5px solid var(--line);
-    background: #fff; color: var(--ink); cursor: pointer; font-size: 0.87rem; display: flex;
-    justify-content: space-between; align-items: center; gap: 10px;
+    text-align: left; padding: 13px 15px; border-radius: 16px; border: 1.5px solid var(--line);
+    background: #fff; color: var(--ink); cursor: pointer; font-size: 0.88rem; font-weight: 500; display: flex;
+    justify-content: space-between; align-items: center; gap: 10px; font-family: 'Quicksand', sans-serif;
   }
-  .option.correct { background: #eef6ee; border-color: #7fa87f; color: #3f6b3f; }
-  .option.wrong { background: #faeceb; border-color: var(--accent); color: #8a3b2f; }
+  .option.correct { background: var(--mint); border-color: #9ed4bb; color: var(--mint-text); }
+  .option.wrong { background: #ffe3ea; border-color: var(--blush-deep); color: var(--blush-text); }
   #next-q {
-    margin-top: 18px; width: 100%; padding: 11px 0; background: var(--ink); color: #fff; border: none;
-    border-radius: 999px; cursor: pointer; font-size: 0.86rem; font-weight: 600; display: flex;
-    align-items: center; justify-content: center; gap: 6px;
+    margin-top: 18px; width: 100%; padding: 12px 0; background: var(--ink); color: #fff; border: none;
+    border-radius: 999px; cursor: pointer; font-size: 0.87rem; font-weight: 700; display: flex;
+    align-items: center; justify-content: center; gap: 6px; font-family: 'Quicksand', sans-serif;
   }
-  .score-h { font-family: 'Caveat', cursive; font-weight: 700; font-size: 2.1rem; margin: 0; }
-  .missed-block { text-align: left; margin-top: 20px; border-top: 1px dashed var(--line); padding-top: 14px; }
-  .missed-label { font-size: 0.74rem; font-weight: 600; color: var(--mute); margin-bottom: 8px; }
-  .missed-word { font-family: 'Caveat', cursive; font-weight: 700; font-size: 1.15rem; }
-  .missed-meaning { font-size: 0.82rem; color: var(--mute); margin: 1px 0 0; }
+  .score-h { font-family: 'Baloo 2', cursive; font-weight: 700; font-size: 2.1rem; margin: 0; color: var(--ink); }
+  .missed-block { text-align: left; margin-top: 20px; border-top: 2px dashed var(--line); padding-top: 14px; }
+  .missed-label { font-size: 0.74rem; font-weight: 700; color: var(--blush-text); margin-bottom: 8px; }
+  .missed-word { font-family: 'Baloo 2', cursive; font-weight: 700; font-size: 1.1rem; color: var(--ink); }
+  .missed-meaning { font-size: 0.83rem; color: var(--mute); margin: 1px 0 0; font-weight: 500; }
   .done-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center; }
 
   .spin { animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  #loading { display: flex; justify-content: center; padding: 60px 0; color: #c2beb3; }
+  #loading { display: flex; justify-content: center; padding: 60px 0; color: var(--blush-deep); }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 </head>
@@ -185,15 +224,25 @@
 
 <div class="wrap">
   <header>
-    <h1 id="title" contenteditable="true" spellcheck="false" title="Click to rename">Flolossary</h1>
-    <p id="subtitle">0 words collected, one Polaroid at a time.</p>
+    <svg class="sparkle" width="16" height="16" viewBox="0 0 24 24" fill="#f0cf8a"><path d="M12 0l2.2 8.8L23 12l-8.8 2.2L12 24l-2.2-8.8L1 12l8.8-2.2L12 0z"/></svg>
+    <svg class="sparkle" width="10" height="10" viewBox="0 0 24 24" fill="#f2a6bf"><path d="M12 0l2.2 8.8L23 12l-8.8 2.2L12 24l-2.2-8.8L1 12l8.8-2.2L12 0z"/></svg>
+    <svg class="sparkle" width="12" height="12" viewBox="0 0 24 24" fill="#e8def7"><path d="M12 0l2.2 8.8L23 12l-8.8 2.2L12 24l-2.2-8.8L1 12l8.8-2.2L12 0z"/></svg>
+    <div class="title-row">
+      <svg width="26" height="18" viewBox="0 0 40 26" style="flex-shrink:0;">
+        <path d="M20 11c-2-6-9-9-14-6-4 2.5-4 8 0 10.5C9 17 20 11 20 11z" fill="#f2a6bf"/>
+        <path d="M20 11c2-6 9-9 14-6 4 2.5 4 8 0 10.5C31 17 20 11 20 11z" fill="#ffd6e3"/>
+        <circle cx="20" cy="11" r="3.4" fill="#d6688f"/>
+      </svg>
+      <h1 id="title" contenteditable="true" spellcheck="false" title="Click to rename">Flolossary</h1>
+    </div>
+    <p id="subtitle">0 words collected, one ribbon-tied Polaroid at a time.</p>
 
     <div class="toolbar">
       <div class="search-box">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <input id="search" type="text" placeholder="Search Flolosii's words…" />
       </div>
-      <button class="btn" id="quiz-btn">✨ Quiz me</button>
+      <button class="btn" id="quiz-btn">Quiz me</button>
       <button class="btn btn-accent" id="add-btn">+ Add word</button>
     </div>
     <p id="error-msg" style="display:none;"></p>
@@ -222,7 +271,7 @@
     <div style="margin-top:16px;">
       <div class="field">
         <label class="field-label">Photo</label>
-        <div id="photo-drop">📷 Add a photo</div>
+        <div id="photo-drop"></div>
         <input type="file" id="photo-input" accept="image/*" style="display:none;" />
       </div>
       <div class="field">
@@ -328,6 +377,16 @@ function esc(s) {
   return d.innerHTML;
 }
 
+const CAMERA_ICON = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8.5a1.5 1.5 0 0 1 1.5-1.5h2l1-2h7l1 2h2A1.5 1.5 0 0 1 20 8.5v9A1.5 1.5 0 0 1 18.5 19h-13A1.5 1.5 0 0 1 4 17.5v-9z"/><circle cx="12" cy="13" r="3.4"/></svg>`;
+function bowSVG(tilt, big) {
+  const w = big ? 44 : 34, h = big ? 28 : 22;
+  return `<svg class="bow" style="--bow-tilt:${tilt}deg" width="${w}" height="${h}" viewBox="0 0 40 26">
+    <path d="M20 11c-2-6-9-9-14-6-4 2.5-4 8 0 10.5C9 17 20 11 20 11z" fill="#f2a6bf"/>
+    <path d="M20 11c2-6 9-9 14-6 4 2.5 4 8 0 10.5C31 17 20 11 20 11z" fill="#ffd6e3"/>
+    <circle cx="20" cy="11" r="3.4" fill="#d6688f"/>
+  </svg>`;
+}
+
 /* ---------------- Firestore sync ---------------- */
 const loadingEl = document.getElementById("loading");
 const emptyEl = document.getElementById("empty-state");
@@ -393,7 +452,7 @@ function render() {
     gridEl.style.display = "none";
     emptyEl.style.display = "block";
     emptyEl.textContent = entries.length === 0
-      ? "No words yet — add the first word Flolosii has made her own."
+      ? "No words yet 🎀 tie a ribbon around the first one Flolosii has made her own."
       : "Nothing matches that search.";
     return;
   }
@@ -411,7 +470,8 @@ function cardHTML(entry) {
   return `
     <button class="polaroid-btn" id="card-${entry.id}">
       <div class="polaroid" style="transform:rotate(${tilt}deg)">
-        <div class="photo" style="${photoStyle}">${entry.image ? "" : "📷"}</div>
+        ${bowSVG(tilt * 1.4)}
+        <div class="photo" style="${photoStyle}">${entry.image ? "" : CAMERA_ICON}</div>
         <div class="caption">
           <div class="word">${esc(entry.word)}</div>
           <p class="meaning-preview">${esc(entry.meaning)}</p>
@@ -433,7 +493,8 @@ function openDetail(entry) {
   function renderDetail() {
     detailBody.innerHTML = `
       <div class="polaroid big">
-        <div class="photo" style="${entry.image ? `background-image:url(${entry.image})` : ""}">${entry.image ? "" : "📷"}</div>
+        ${bowSVG(uidTilt(entry.id) * 1.4, true)}
+        <div class="photo" style="${entry.image ? `background-image:url(${entry.image})` : ""}">${entry.image ? "" : CAMERA_ICON}</div>
       </div>
       <h2 class="word-title">${esc(entry.word)}</h2>
       ${entry.phonetic ? `<p class="phonetic">${esc(entry.phonetic)}</p>` : ""}
@@ -441,7 +502,7 @@ function openDetail(entry) {
       <p class="meaning-full">${esc(entry.meaning)}</p>
       ${entry.example ? `<p class="example">"${esc(entry.example)}"</p>` : ""}
       <div class="modal-actions">
-        <button class="btn" id="edit-btn" style="justify-content:center;border-radius:6px;">✏️ Edit</button>
+        <button class="btn" id="edit-btn">✏️ Edit</button>
         <button class="btn btn-delete ${confirmDelete ? "confirm" : ""}" id="del-btn">🗑 ${confirmDelete ? "Confirm delete" : "Delete"}</button>
       </div>`;
     document.getElementById("edit-btn").addEventListener("click", () => {
@@ -487,12 +548,13 @@ function openForm(entry) {
 function updatePhotoDrop() {
   if (photoData) {
     photoDrop.style.backgroundImage = `url(${photoData})`;
-    photoDrop.textContent = "";
+    photoDrop.innerHTML = "";
   } else {
     photoDrop.style.backgroundImage = "";
-    photoDrop.textContent = "📷 Add a photo";
+    photoDrop.innerHTML = `${CAMERA_ICON}<span>Add a photo</span>`;
   }
 }
+updatePhotoDrop();
 photoDrop.addEventListener("click", () => photoInput.click());
 photoInput.addEventListener("change", async (e) => {
   const file = e.target.files?.[0];
@@ -575,7 +637,7 @@ function renderQuizIntro() {
 
   quizBody.innerHTML = `
     <div class="quiz-center">
-      <div style="font-size:26px;">✨</div>
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="#f0cf8a"><path d="M12 0l2.2 8.8L23 12l-8.8 2.2L12 24l-2.2-8.8L1 12l8.8-2.2L12 0z"/></svg>
       <h2 class="quiz-h">Do you really know Flolosii's words?</h2>
       ${!canQuiz
         ? `<p class="quiz-sub">Add at least 2 words to the collection before you can take a quiz.</p>`
@@ -608,7 +670,8 @@ function runQuiz(length) {
       <p class="q-progress">QUESTION ${qIndex + 1} OF ${questions.length}</p>
       <div class="q-photo-wrap">
         <div class="polaroid big">
-          <div class="photo" style="${q.entry.image ? `background-image:url(${q.entry.image})` : ""}">${q.entry.image ? "" : "📷"}</div>
+          ${bowSVG(uidTilt(q.entry.id) * 1.4, true)}
+          <div class="photo" style="${q.entry.image ? `background-image:url(${q.entry.image})` : ""}">${q.entry.image ? "" : CAMERA_ICON}</div>
         </div>
       </div>
       <h3 class="q-word">${esc(q.entry.word)}</h3>
